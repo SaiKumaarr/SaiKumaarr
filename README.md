@@ -11,7 +11,7 @@ ResumeTex Clone is a full-stack web platform that transforms existing PDF resume
 ---
 
 ## 2. High-Level Architecture
-```
+``
 ┌─────────────────────────────────────────────────────────────────────┐
 │                              Frontend (React)                       │
 │ ┌─────────────────────────────────────────────────────────────────┐ │
