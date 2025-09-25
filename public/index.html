@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resume Converter</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>Resume Format Converter</h1>
+      <p>
+        Upload up to five resumes written in the custom plain-text format and
+        instantly generate LaTeX sources and downloadable PDFs.
+      </p>
+    </header>
+
+    <main class="app-main">
+      <section class="upload-panel" aria-label="Resume upload">
+        <h2>Upload your resumes</h2>
+        <p>
+          Each file must follow the custom structure described below. Select up
+          to five files at a time.
+        </p>
+        <label class="file-drop" for="resume-files">
+          <input
+            id="resume-files"
+            type="file"
+            accept=".txt,.resume"
+            multiple
+            aria-describedby="upload-help"
+          />
+          <span class="file-drop__prompt">Drop files here or click to browse</span>
+        </label>
+        <p id="upload-help" class="help-text">
+          Need an example? Download the sample template below and fill it with
+          your information.
+        </p>
+        <button id="download-sample" class="ghost-button" type="button">
+          Download sample format
+        </button>
+        <p id="upload-feedback" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="results-panel" aria-label="Conversion results">
+        <h2>Converted resumes</h2>
+        <p class="help-text">
+          After conversion the LaTeX source is shown for each resume. Use the
+          buttons to download the <code>.tex</code> file or the generated PDF.
+        </p>
+        <div id="results"></div>
+      </section>
+
+      <section class="format-panel" aria-label="Input format reference">
+        <h2>Custom resume format</h2>
+        <p>
+          The converter expects plain text files that follow the structure below.
+          Lines beginning with <code>-</code> or <code>*</code> are treated as
+          list items. Empty lines are ignored.
+        </p>
+        <pre class="format-example" aria-label="Sample resume format">
+Name: Ada Lovelace
+Email: ada@example.com
+Phone: +44 0000 0000
+Summary:
+- Mathematician and writer with a passion for computation.
+Experience:
+* Analytical Engines Ltd | Consultant | 1843-1845
+Education:
+* University of London | Mathematics | 1835
+Skills:
+- Analytical Thinking
+- Programming Languages: Sketching Engines
+        </pre>
+      </section>
+    </main>
+
+    <template id="result-template">
+      <article class="result-card">
+        <header class="result-card__header">
+          <h3></h3>
+          <p class="result-card__status"></p>
+        </header>
+        <section class="result-card__body">
+          <h4>LaTeX Output</h4>
+          <textarea class="latex-output" readonly></textarea>
+        </section>
+        <footer class="result-card__footer">
+          <button class="primary-button download-tex" type="button">
+            Download LaTeX
+          </button>
+          <button class="primary-button download-pdf" type="button">
+            Download PDF
+          </button>
+        </footer>
+      </article>
+    </template>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-3nykQeJE72twblwh3yc+yOcoQq32LwNJiyTDON1Om3q9Pymdhx1q2w6kgWSe9SlvEP6zdXIs8KD0w8Lb04E3Jg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="assets/js/app.js"></script>
+  </body>
+</html>

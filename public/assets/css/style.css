@@ -1,0 +1,215 @@
+:root {
+  color-scheme: light dark;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  --bg: #f5f5f7;
+  --card-bg: #ffffff;
+  --accent: #3f51b5;
+  --accent-dark: #2c3a8c;
+  --text: #1b1f24;
+  --muted: #586069;
+  --border: #d0d7de;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.app-header {
+  background: linear-gradient(135deg, #273469, #4a6ee0);
+  color: #ffffff;
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.app-header h1 {
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+}
+
+.app-header p {
+  margin: 0 auto;
+  max-width: 640px;
+}
+
+.app-main {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.upload-panel,
+.results-panel,
+.format-panel {
+  background: var(--card-bg);
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(31, 35, 40, 0.1);
+  padding: 1.5rem;
+  border: 1px solid rgba(12, 22, 34, 0.08);
+}
+
+.upload-panel h2,
+.results-panel h2,
+.format-panel h2 {
+  margin-top: 0;
+}
+
+.file-drop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed var(--border);
+  border-radius: 0.75rem;
+  padding: 2rem 1.5rem;
+  cursor: pointer;
+  margin-bottom: 0.75rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  text-align: center;
+}
+
+.file-drop:hover,
+.file-drop:focus-within {
+  border-color: var(--accent);
+  background-color: rgba(63, 81, 181, 0.05);
+}
+
+.file-drop--dragging {
+  border-color: var(--accent);
+  background-color: rgba(63, 81, 181, 0.08);
+}
+
+.file-drop input[type='file'] {
+  display: none;
+}
+
+.file-drop__prompt {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.help-text {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.primary-button,
+.ghost-button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.65rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.primary-button {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.primary-button:hover,
+.primary-button:focus {
+  background: var(--accent-dark);
+  transform: translateY(-1px);
+}
+
+.ghost-button {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.ghost-button:hover,
+.ghost-button:focus {
+  background: rgba(63, 81, 181, 0.08);
+  transform: translateY(-1px);
+}
+
+#upload-feedback {
+  min-height: 1.4rem;
+  margin-top: 0.75rem;
+  font-weight: 500;
+}
+
+#results {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.result-card {
+  border: 1px solid rgba(12, 22, 34, 0.08);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.result-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.result-card__header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.result-card__status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.result-card__body h4 {
+  margin: 0 0 0.5rem;
+}
+
+.latex-output {
+  width: 100%;
+  min-height: 200px;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  padding: 0.75rem;
+  font-family: 'Fira Code', 'Courier New', monospace;
+  font-size: 0.85rem;
+  resize: vertical;
+  background: rgba(246, 248, 250, 0.8);
+}
+
+.result-card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.format-example {
+  background: rgba(31, 35, 40, 0.08);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+  .app-main {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+  }
+
+  .result-card__footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
