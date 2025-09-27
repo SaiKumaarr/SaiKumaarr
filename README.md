@@ -1,3 +1,7 @@
+#Trying to learn Vibe codingmby using openai codex and other platofrms 
+
+
+
 # Streamlit AI Lead Generation Agent
 
 This project provides a Streamlit-based AI assistant that performs boolean Google searches for public LinkedIn profiles, extracts structured lead data, enriches it with Google Gemini, and saves the final results to a Google Sheet using Composio.
