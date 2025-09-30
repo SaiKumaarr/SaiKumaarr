@@ -1,130 +1,114 @@
-"""Streamlit application for AI-powered lead generation."""
+"""A simple Streamlit calculator application."""
 from __future__ import annotations
 
-import logging
-import os
-from datetime import datetime
+from dataclasses import dataclass
 from typing import Callable, Dict, List
 
-import pandas as pd
 import streamlit as st
-from composio import ComposioToolSet
-from dotenv import load_dotenv
-
-from utils.firecrawl_extractor import FirecrawlExtractor
-from utils.gemini_parser import GeminiParser
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-load_dotenv()
 
 
-def _resolve_executor(toolset: ComposioToolSet) -> Callable[[ComposioToolSet, str, str, Dict], Dict]:
-    """Return a callable that can execute Composio actions regardless of SDK version."""
-    if hasattr(toolset, "execute_action"):
-        return lambda ts, tool, action, params: ts.execute_action(tool_name=tool, action_name=action, params=params)
-    if hasattr(toolset, "execute"):
-        return lambda ts, tool, action, params: ts.execute(tool_name=tool, action_name=action, params=params)
-    if hasattr(toolset, "run_action"):
-        return lambda ts, tool, action, params: ts.run_action(tool_name=tool, action_name=action, params=params)
-    raise AttributeError("ComposioToolSet client does not support action execution methods")
+@dataclass(frozen=True)
+class Operation:
+    """Representation of a binary calculator operation."""
+
+    label: str
+    function: Callable[[float, float], float]
+
+    def run(self, left: float, right: float) -> float:
+        return self.function(left, right)
 
 
-def create_leads_sheet(leads: List[Dict]) -> str:
-    """Create a Google Sheet with the supplied leads and return its public URL."""
-    api_key = os.getenv("COMPOSIO_API_KEY")
-    if not api_key:
-        raise ValueError("COMPOSIO_API_KEY environment variable is required to save leads")
+def _build_operations() -> Dict[str, Operation]:
+    """Create the supported calculator operations."""
 
-    toolset = ComposioToolSet(api_key=api_key)
-    executor = _resolve_executor(toolset)
+    def safe_division(left: float, right: float) -> float:
+        if right == 0:
+            raise ValueError("Division by zero is not allowed.")
+        return left / right
 
-    title = f"AI Leads {datetime.utcnow():%Y%m%d-%H%M%S}"
-    create_response = executor(toolset, "google_sheets", "create_spreadsheet", {"title": title})
+    def safe_modulo(left: float, right: float) -> float:
+        if right == 0:
+            raise ValueError("Modulo by zero is not allowed.")
+        return left % right
 
-    spreadsheet_id = None
-    if isinstance(create_response, dict):
-        spreadsheet_id = (
-            create_response.get("spreadsheetId")
-            or create_response.get("id")
-            or create_response.get("spreadsheet_id")
-        )
-    if not spreadsheet_id:
-        raise RuntimeError("Failed to create Google Sheet via Composio")
-
-    headers = ["name", "headline", "company", "location", "linkedin_url"]
-    values = [headers]
-    for lead in leads:
-        row = [lead.get(key, "") for key in headers]
-        values.append(row)
-
-    update_payload = {
-        "spreadsheet_id": spreadsheet_id,
-        "range": "Leads!A1",
-        "values": values,
+    return {
+        "Addition (+)": Operation("+", lambda l, r: l + r),
+        "Subtraction (-)": Operation("-", lambda l, r: l - r),
+        "Multiplication (×)": Operation("×", lambda l, r: l * r),
+        "Division (÷)": Operation("÷", safe_division),
+        "Power (^)": Operation("^", lambda l, r: l**r),
+        "Modulo (%)": Operation("%", safe_modulo),
     }
 
-    executor(toolset, "google_sheets", "batch_update_values", update_payload)
 
-    return f"https://docs.google.com/spreadsheets/d/{spreadsheet_id}"
+OPERATIONS = _build_operations()
 
 
-def generate_leads(criteria: str, limit: int = 10) -> List[Dict]:
-    extractor = FirecrawlExtractor()
-    leads = extractor.search_and_extract(criteria, limit=limit)
-    if not leads:
-        return []
+def format_result(value: float) -> str:
+    """Format calculator results with minimal trailing zeros."""
 
-    parser = GeminiParser()
-    enriched: List[Dict] = []
-    for lead in leads:
-        enriched.append(parser.enrich_lead(lead))
-    return enriched
+    if value.is_integer():
+        return f"{int(value)}"
+    return f"{value:.10g}"
+
+
+def calculate(left: float, right: float, operation_name: str) -> float:
+    """Calculate the result of the selected operation."""
+
+    operation = OPERATIONS[operation_name]
+    return operation.run(left, right)
+
+
+def _init_history() -> None:
+    if "history" not in st.session_state:
+        st.session_state.history: List[str] = []
 
 
 def main() -> None:
-    st.set_page_config(page_title="AI Lead Generation Agent", layout="wide")
-    st.title("AI Lead Generation Agent")
-    st.write("Enter a boolean query to discover LinkedIn leads and export them to Google Sheets.")
-
-    criteria = st.text_input(
-        "Lead criteria",
-        placeholder='e.g. site:linkedin.com/in "Marketing Director" AND "SaaS" AND "Berlin" -jobs',
+    st.set_page_config(page_title="Streamlit Calculator", page_icon="➗", layout="centered")
+    st.title("🧮 Streamlit Calculator")
+    st.write(
+        "Perform quick arithmetic directly in your browser. Choose an operation, enter two numbers,"
+        " and instantly view the result."
     )
-    max_leads = st.slider("Number of leads", min_value=1, max_value=25, value=10)
 
-    if st.button("Generate Leads"):
-        if not criteria.strip():
-            st.warning("Please provide a search query to continue.")
-            return
+    _init_history()
 
-        with st.spinner("Searching and enriching leads..."):
-            try:
-                leads = generate_leads(criteria, limit=max_leads)
-            except ValueError as exc:
-                st.error(str(exc))
-                return
-            except Exception as exc:  # pragma: no cover - runtime errors surfaced to UI
-                logger.exception("Lead generation failed")
-                st.error(f"Lead generation failed: {exc}")
-                return
+    col_left, col_right = st.columns(2)
+    with col_left:
+        left_value = st.number_input("First number", value=0.0, format="%0.6f")
+    with col_right:
+        right_value = st.number_input("Second number", value=0.0, format="%0.6f")
 
-        if not leads:
-            st.info("No leads were found for the provided query. Try adjusting your keywords.")
-            return
+    operation_name = st.selectbox("Operation", list(OPERATIONS.keys()))
 
+    if st.button("Calculate", type="primary"):
         try:
-            sheet_url = create_leads_sheet(leads)
-        except Exception as exc:  # pragma: no cover
-            logger.exception("Failed to save leads to Google Sheets")
-            st.error(f"Failed to save leads to Google Sheets: {exc}")
-            st.dataframe(pd.DataFrame(leads))
-            return
+            result = calculate(left_value, right_value, operation_name)
+        except ValueError as exc:
+            st.error(str(exc))
+        else:
+            symbol = OPERATIONS[operation_name].label
+            formatted_result = format_result(result)
+            st.success(f"Result: {format_result(left_value)} {symbol} {format_result(right_value)} = {formatted_result}")
+            st.session_state.history.insert(
+                0,
+                f"{format_result(left_value)} {symbol} {format_result(right_value)} = {formatted_result}",
+            )
+            st.session_state.history = st.session_state.history[:5]
 
-        st.success("Leads generated and saved successfully!")
-        st.markdown(f"[Open Google Sheet]({sheet_url})")
-        st.dataframe(pd.DataFrame(leads))
+    if st.session_state.history:
+        st.markdown("### Recent calculations")
+        for entry in st.session_state.history:
+            st.write(f"• {entry}")
+    else:
+        st.info("No calculations yet. Enter numbers and press **Calculate** to get started.")
+
+    st.markdown("---")
+    st.caption(
+        "This calculator supports addition, subtraction, multiplication, division, power, and modulo operations."
+        " Built with [Streamlit](https://streamlit.io/)."
+    )
 
 
 if __name__ == "__main__":

@@ -1,6 +1,1 @@
 streamlit
-python-dotenv
-requests
-google-generativeai
-composio
-pandas

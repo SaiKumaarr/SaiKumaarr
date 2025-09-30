@@ -1,30 +1,12 @@
-#Trying to learn Vibe codingmby using openai codex and other platofrms 
+# Streamlit Calculator
 
-
-
-# Streamlit AI Lead Generation Agent
-
-This project provides a Streamlit-based AI assistant that performs boolean Google searches for public LinkedIn profiles, extracts structured lead data, enriches it with Google Gemini, and saves the final results to a Google Sheet using Composio.
+A lightweight Streamlit application that performs common arithmetic operations right in the browser. Enter two numbers, choose an operation, and instantly see the result along with a short history of recent calculations.
 
 ## Features
-- 🔍 Boolean Google search queries executed through Firecrawl
-- 🧠 Lead enrichment via Google Gemini (with graceful fallback to raw data)
-- 📄 Structured profile extraction using Firecrawl's extract endpoint and JSON schema
-- 🧾 Automatic lead export to Google Sheets powered by Composio
-- 🖥️ Streamlit UI with simple input and actionable feedback
-
-## Project Structure
-```
-.
-├── app.py
-├── requirements.txt
-├── utils
-│   ├── firecrawl_extractor.py
-│   └── gemini_parser.py
-├── .env.example
-├── .gitignore
-└── README.md
-```
+- 🧮 Addition, subtraction, multiplication, division, power, and modulo operations
+- ⚡ Instant feedback with clear result formatting
+- 📝 Persistent history (last five calculations) stored in the Streamlit session state
+- 📱 Responsive layout that works on desktop and mobile browsers
 
 ## Getting Started
 
@@ -33,30 +15,31 @@ This project provides a Streamlit-based AI assistant that performs boolean Googl
    pip install -r requirements.txt
    ```
 
-2. **Create an environment file**
-   ```bash
-   cp .env.example .env
-   ```
-   Populate `.env` with the appropriate API keys.
-
-3. **Run the Streamlit app**
+2. **Run the Streamlit app**
    ```bash
    streamlit run app.py
    ```
 
-## Environment Variables
-| Variable | Description |
-| --- | --- |
-| `FIRECRAWL_API_KEY` | API key for Firecrawl search/extract APIs |
-| `FIRECRAWL_BASE_URL` | (Optional) Override for the Firecrawl API base URL |
-| `GOOGLE_API_KEY` | Google Gemini API key used by `google-generativeai` |
-| `COMPOSIO_API_KEY` | API key for Composio's tool execution |
+3. **Open your browser**
+   Streamlit will display a local URL (typically <http://localhost:8501>). Open it to start calculating.
 
-## Usage Notes
-- No CLI authentication flows are required—Composio is used directly with its API key.
-- The app handles failures gracefully and will surface actionable feedback in the UI.
-- When Gemini enrichment fails or is unavailable, the app will fall back to Firecrawl's raw extracted data.
-- Leads are written to a new Google Sheet with headers for easy review.
+## Usage
+1. Enter the first and second numbers using the numeric inputs.
+2. Select the desired arithmetic operation from the dropdown menu.
+3. Press **Calculate** to display the result.
+4. Review your last few calculations in the history list below the form.
 
-## Deployment
-The codebase is organized for GitHub deployment. Ensure environment variables are securely configured in your hosting provider before launching the Streamlit application.
+## Project Structure
+```
+.
+├── app.py           # Streamlit user interface and calculator logic
+├── requirements.txt # Python dependencies
+└── README.md        # Project documentation (this file)
+```
+
+## Customisation Tips
+- Adjust the `OPERATIONS` dictionary in `app.py` to add more functions (e.g., square root or logarithms).
+- Modify `format_result` to change how numbers are displayed.
+- Streamlit widgets can be rearranged or styled further using [Streamlit layout primitives](https://docs.streamlit.io/library/get-started/main-concepts#layout).
+
+Enjoy crunching numbers! 🔢
