@@ -1,6 +1,6 @@
 # Streamlit Calculator
 
-A lightweight Streamlit application that performs common arithmetic operations right in the browser. Enter two numbers, choose an operation, and instantly see the result along with a short history of recent calculations.
+Hi I'm Saikumar, I'm learning Codex and other platforms. This project is a lightweight Streamlit application that performs common arithmetic operations right in the browser. Enter two numbers, choose an operation, and instantly see the result along with a short history of recent calculations.
 
 ## Features
 - 🧮 Addition, subtraction, multiplication, division, power, and modulo operations
