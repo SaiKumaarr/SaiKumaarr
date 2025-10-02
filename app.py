@@ -32,7 +32,10 @@ def _resolve_executor(toolset: ComposioToolSet) -> Callable[[ComposioToolSet, st
 
 
 def create_leads_sheet(leads: List[Dict]) -> str:
-    """Create a Google Sheet with the supplied leads and return its public URL."""
+    """Return the URL for a newly created Google Sheet populated with the supplied leads without changing sharing settings.
+
+    Additional steps are required if the sheet needs to be publicly accessible.
+    """
     api_key = os.getenv("COMPOSIO_API_KEY")
     if not api_key:
         raise ValueError("COMPOSIO_API_KEY environment variable is required to save leads")
