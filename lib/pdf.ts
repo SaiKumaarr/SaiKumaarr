@@ -1,7 +1,7 @@
 import PDFDocument from "pdfkit";
 import type { ResumeData } from "./types";
 
-const addSection = (doc: PDFKit.PDFDocument, heading: string) => {
+const addSection = (doc: PDFDocument, heading: string) => {
   doc.moveDown(0.8);
   doc.fontSize(14).fillColor("#0ea5e9").text(heading.toUpperCase(), { continued: false });
   doc.moveDown(0.2);

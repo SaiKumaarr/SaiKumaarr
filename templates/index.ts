@@ -34,7 +34,7 @@ const sanitizeInline = (value?: string): string => {
 const formatLinks = (links: ResumeData["links"]): string => {
   if (!links.length) return "";
   const items = links
-    .map((link) => `\\href{${link.url}}{${sanitizeInline(link.label || link.url)}}`)
+    .map((link) => `\\href{${sanitize(link.url)}}{${sanitizeInline(link.label || link.url)}}`)
     .join(" \\quad ");
   return `\\vspace{0.5em}\\\n{\\small ${items}}`;
 };
