@@ -49,6 +49,45 @@ const formatSkills = (skills: string[]): string => {
   ].join("\\n");
 };
 
+const formatTimelineSections = (data: ResumeData): string => {
+  return data.sections
+    .map((section) => {
+      if (!section.items.length) return "";
+
+      const items = section.items
+        .map((item) => {
+          const headerParts = [
+            item.date ? `\\textsc{${sanitizeInline(item.date)}}` : "",
+            item.title ? `\\textbf{${sanitizeInline(item.title)}}` : "",
+          ].filter(Boolean);
+
+          const header = headerParts.length ? `\\noindent ${headerParts.join("\\\hspace{1em}")}` : "";
+          const subtitle = item.subtitle ? `{\\small ${sanitizeInline(item.subtitle)}}` : "";
+
+          const details: string[] = [];
+          if (item.description) {
+            details.push(`{\\small ${sanitizeInline(item.description)}}`);
+          }
+          if (item.bullets?.length) {
+            details.push(
+              [
+                "\\begin{itemize}[leftmargin=*]",
+                ...(item.bullets || []).map((bullet) => `  \\item ${sanitizeInline(bullet)}`),
+                "\\end{itemize}",
+              ].join("\\n")
+            );
+          }
+
+          return [header, subtitle, ...details].filter(Boolean).join("\\n");
+        })
+        .join("\\n\\medskip\\n");
+
+      return [`\\section*{${sanitizeInline(section.heading)}}`, items].filter(Boolean).join("\\n");
+    })
+    .filter(Boolean)
+    .join("\\n\\bigskip\\n");
+};
+
 const formatSections = (data: ResumeData): string => {
   return data.sections
     .map((section) => {
@@ -137,12 +176,49 @@ ${formatSkills(data.skills)}
 \\end{document}`;
 };
 
+const renderCompact = (data: ResumeData): string => {
+  const summaryBlock = data.summary
+    ? `\\section*{Profile}\\n{\\small ${sanitizeInline(data.summary)}}`
+    : "";
+
+  const contactLine = [sanitizeInline(data.email), sanitizeInline(data.phone), sanitizeInline(data.location)]
+    .filter(Boolean)
+    .join(" \\textbullet{} ");
+  const contactBlock = contactLine ? `{\\small ${contactLine}}` : "";
+
+  return `\\documentclass[10pt,a4paper]{article}
+\\usepackage[margin=1.25cm]{geometry}
+\\usepackage{enumitem}
+\\usepackage{hyperref}
+\\usepackage{titlesec}
+\\usepackage{parskip}
+\\titleformat{\\section}{\\large\\bfseries\\scshape}{ }{0pt}{ }
+\\begin{document}
+\\noindent{\\LARGE\\bfseries ${sanitizeInline(data.name)}}\\\\
+${data.headline ? `{\\large ${sanitizeInline(data.headline)}}\\\\[4pt]` : ""}
+${contactBlock}
+${formatLinks(data.links)}
+\\medskip
+${summaryBlock}
+\\medskip
+${formatTimelineSections(data)}
+\\medskip
+${formatSkills(data.skills)}
+\\end{document}`;
+};
+
+const RENDERERS: Record<string, (data: ResumeData) => string> = {
+  classic: renderClassic,
+  minimal: renderMinimal,
+  compact: renderCompact,
+};
+
 export const TEMPLATES: Record<string, TemplateDefinition> = Object.fromEntries(
   TEMPLATE_OPTIONS.map((option) => [
     option.id,
     {
       ...option,
-      render: option.id === "minimal" ? renderMinimal : renderClassic,
+      render: RENDERERS[option.id] ?? renderClassic,
     },
   ])
 );

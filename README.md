@@ -4,7 +4,7 @@ ResumeTex transforms PDF resumes into clean LaTeX documents that you can downloa
 
 ## Key Features
 - Upload any PDF resume and receive a LaTeX version plus a compiled PDF.
-- Choose from multiple professional templates designed for different roles.
+- Choose from multiple professional templates, including a compact timeline layout for experience-heavy resumes.
 - Optionally tailor the resume with Google Generative AI using your job description.
 - Files are processed in-memory for a privacy-friendly workflow.
 

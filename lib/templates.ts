@@ -15,4 +15,9 @@ export const TEMPLATE_OPTIONS: TemplateOption[] = [
     name: "Minimal Modern",
     description: "Clean single-column layout with bold typography for tech roles.",
   },
+  {
+    id: "compact",
+    name: "Compact Timeline",
+    description: "Condensed layout with timeline headers for experience-heavy resumes.",
+  },
 ];

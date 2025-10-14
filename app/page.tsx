@@ -9,6 +9,7 @@ const FEATURES = [
   "Multiple professional templates",
   "Role-specific tailoring with Google Generative AI",
   "Download LaTeX source and ready-to-send PDF",
+  "Compact timeline template for experience-heavy resumes",
 ];
 
 const HOW_IT_WORKS = [
