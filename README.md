@@ -8,6 +8,12 @@ ResumeTex transforms PDF resumes into clean LaTeX documents that you can downloa
 - Optionally tailor the resume with Google Generative AI using your job description.
 - Files are processed in-memory for a privacy-friendly workflow.
 
+## Technology Stack
+- **TypeScript & JavaScript** for type-safe, modern application logic.
+- **Next.js & React** to power the interactive resume conversion workflow.
+- **Tailwind CSS** for rapid, responsive styling.
+- **PDFKit & JSZip** to generate polished PDFs and downloadable bundles.
+
 ## Getting Started
 1. Clone the repository and install dependencies with your preferred package manager.
 2. Create a local environment file (for example .env.local) if you want to use AI tailoring and add your Google Generative AI API key.

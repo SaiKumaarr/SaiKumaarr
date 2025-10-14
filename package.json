@@ -2,6 +2,15 @@
   "name": "resumetex",
   "version": "0.1.0",
   "private": true,
+  "keywords": [
+    "resume",
+    "latex",
+    "nextjs",
+    "react",
+    "typescript",
+    "javascript",
+    "tailwindcss"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
