@@ -12,6 +12,8 @@ const FEATURES = [
   "Compact timeline template for experience-heavy resumes",
 ];
 
+const LANGUAGE_BADGES = ["TypeScript", "JavaScript", "LaTeX", "CSS", "HTML"];
+
 const HOW_IT_WORKS = [
   "Upload your current resume as a PDF.",
   "Choose a LaTeX template or keep the default.",
@@ -123,6 +125,16 @@ export default function HomePage() {
           <p className="text-lg text-slate-300">
             Convert your existing resume into professional LaTeX templates in seconds. Optimise for specific roles and download both the LaTeX source and polished PDF—no LaTeX knowledge required.
           </p>
+          <div className="flex flex-wrap gap-2 text-xs text-sky-200">
+            {LANGUAGE_BADGES.map((language) => (
+              <span
+                key={language}
+                className="inline-flex items-center rounded-full border border-sky-500/40 bg-sky-500/10 px-3 py-1 font-semibold uppercase tracking-wide"
+              >
+                {language}
+              </span>
+            ))}
+          </div>
           <ul className="grid gap-3 text-sm text-slate-300">
             {FEATURES.map((feature) => (
               <li key={feature} className="flex items-start gap-3">
