@@ -1,4 +1,4 @@
-# ResumeTex
+# Saikumar ResumeTex
 
 ResumeTex transforms PDF resumes into clean LaTeX documents that you can download alongside a ready-to-send PDF. The app runs entirely in the browser and lightweight serverless functions, so it is fast to deploy and easy to maintain.
 
@@ -29,5 +29,3 @@ ResumeTex transforms PDF resumes into clean LaTeX documents that you can downloa
 - Keep file sizes under 10 MB to avoid upload issues.
 - Monitor Vercel usage occasionally to stay within the free tier limits.
 
-## License
-ResumeTex is distributed under the MIT License. Contributions and feedback are welcome.
