@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { TEMPLATE_OPTIONS } from "@/lib/templates";
-import type { ProcessResult } from "@/lib/types";
+import type { ManualLatexResult, ProcessResult } from "@/lib/types";
 
 const FEATURES = [
   "AI-powered PDF to LaTeX conversion",
@@ -10,15 +10,22 @@ const FEATURES = [
   "Role-specific tailoring with Google Generative AI",
   "Download LaTeX source and ready-to-send PDF",
   "Compact timeline template for experience-heavy resumes",
+  "Upload custom LaTeX resumes for safekeeping and quick edits",
 ];
 
 const LANGUAGE_BADGES = ["TypeScript", "JavaScript", "LaTeX", "CSS", "HTML"];
+
+const INPUT_MODES = [
+  { id: "pdf" as const, label: "Convert PDF" },
+  { id: "latex" as const, label: "Upload LaTeX" },
+];
 
 const HOW_IT_WORKS = [
   "Upload your current resume as a PDF.",
   "Choose a LaTeX template or keep the default.",
   "Optionally provide the target job title and description.",
   "Process the file and download your polished resume.",
+  "Alternatively, upload a LaTeX resume directly to store and package it.",
 ];
 
 const DownloadButton = ({
@@ -51,7 +58,11 @@ const base64ToBlob = (base64: string, mime: string) => {
 };
 
 export default function HomePage() {
+  const [inputMode, setInputMode] = useState<(typeof INPUT_MODES)[number]["id"]>("pdf");
   const [file, setFile] = useState<File | null>(null);
+  const [latexFile, setLatexFile] = useState<File | null>(null);
+  const [latexSource, setLatexSource] = useState("");
+  const [manualFilename, setManualFilename] = useState("manual-resume.tex");
   const [templateId, setTemplateId] = useState<string>(TEMPLATE_OPTIONS[0]?.id ?? "classic");
   const [tailored, setTailored] = useState<boolean>(false);
   const [jobTitle, setJobTitle] = useState("");
@@ -59,21 +70,81 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ProcessResult | null>(null);
+  const [manualResult, setManualResult] = useState<ManualLatexResult | null>(null);
 
   const template = useMemo(
     () => TEMPLATE_OPTIONS.find((option) => option.id === templateId) || TEMPLATE_OPTIONS[0],
     [templateId]
   );
 
+  const handleModeChange = (mode: (typeof INPUT_MODES)[number]["id"]) => {
+    setInputMode(mode);
+    setError(null);
+    setResult(null);
+    setManualResult(null);
+    setLoading(false);
+    if (mode === "pdf") {
+      setLatexFile(null);
+      setLatexSource("");
+    } else {
+      setFile(null);
+    }
+  };
+
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setError(null);
+    setResult(null);
+    setManualResult(null);
+
+    if (inputMode === "latex") {
+      if (!latexFile && !latexSource.trim()) {
+        setError("Provide LaTeX content to upload.");
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const body = new FormData();
+        if (latexFile) {
+          body.append("latexFile", latexFile);
+        } else {
+          body.append("latex", latexSource);
+        }
+        if (manualFilename.trim()) {
+          body.append("filename", manualFilename.trim());
+        }
+
+        const response = await fetch("/api/manual-latex", {
+          method: "POST",
+          body,
+        });
+
+        if (!response.ok) {
+          const data = await response
+            .json()
+            .catch(() => ({ error: "Failed to package LaTeX resume." }));
+          throw new Error(data.error || "Failed to package LaTeX resume.");
+        }
+
+        const data = (await response.json()) as ManualLatexResult;
+        setManualResult(data);
+        setManualFilename(data.filename);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Something went wrong.");
+      } finally {
+        setLoading(false);
+      }
+
+      return;
+    }
+
     if (!file) {
       setError("Please select a PDF resume to convert.");
       return;
     }
 
-    setError(null);
-    setResult(null);
     setLoading(true);
 
     try {
@@ -146,88 +217,183 @@ export default function HomePage() {
         </div>
         <div className="flex flex-col justify-between gap-6 rounded-2xl border border-slate-800 bg-slate-950/60 p-6">
           <form className="space-y-5" onSubmit={onSubmit}>
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-200" htmlFor="resume">
-                Upload your resume (PDF, max 10MB)
-              </label>
-              <input
-                id="resume"
-                name="resume"
-                type="file"
-                accept="application/pdf"
-                required
-                onChange={(event) => {
-                  const selected = event.target.files?.[0] ?? null;
-                  setFile(selected);
-                }}
-                className="w-full cursor-pointer rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
-              />
-              {file ? (
-                <p className="text-xs text-slate-400">Selected: {file.name}</p>
-              ) : (
-                <p className="text-xs text-slate-500">We never store your files—uploads are deleted after processing.</p>
-              )}
+            <div className="flex rounded-lg border border-slate-800 bg-slate-900/60 p-1 text-xs font-semibold text-slate-300">
+              {INPUT_MODES.map((mode) => {
+                const active = inputMode === mode.id;
+                return (
+                  <button
+                    key={mode.id}
+                    type="button"
+                    onClick={() => handleModeChange(mode.id)}
+                    className={`flex-1 rounded-md px-3 py-2 transition ${
+                      active ? "bg-sky-500 text-white shadow" : "text-slate-300 hover:bg-slate-800/60 hover:text-white"
+                    }`}
+                  >
+                    {mode.label}
+                  </button>
+                );
+              })}
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-200" htmlFor="template">
-                Choose a template
-              </label>
-              <select
-                id="template"
-                name="template"
-                value={templateId}
-                onChange={(event) => setTemplateId(event.target.value)}
-                className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
-              >
-                {TEMPLATE_OPTIONS.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.name}
-                  </option>
-                ))}
-              </select>
-              <p className="text-xs text-slate-400">{template?.description}</p>
-            </div>
+            {inputMode === "pdf" ? (
+              <>
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-slate-200" htmlFor="resume">
+                    Upload your resume (PDF, max 10MB)
+                  </label>
+                  <input
+                    id="resume"
+                    name="resume"
+                    type="file"
+                    accept="application/pdf"
+                    required
+                    onChange={(event) => {
+                      const selected = event.target.files?.[0] ?? null;
+                      setFile(selected);
+                    }}
+                    className="w-full cursor-pointer rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
+                  />
+                  {file ? (
+                    <p className="text-xs text-slate-400">Selected: {file.name}</p>
+                  ) : (
+                    <p className="text-xs text-slate-500">We never store your files—uploads are deleted after processing.</p>
+                  )}
+                </div>
 
-            <div className="space-y-3 rounded-xl border border-slate-800 bg-slate-900/80 p-4">
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-sm font-semibold text-slate-200">Tailor for a specific job</span>
-                <input
-                  type="checkbox"
-                  className="h-5 w-5 cursor-pointer accent-sky-500"
-                  checked={tailored}
-                  onChange={(event) => setTailored(event.target.checked)}
-                />
-              </div>
-              <p className="text-xs text-slate-400">
-                Provide the role and description to optimise bullet points for Applicant Tracking Systems.
-              </p>
-              <div className="grid gap-3">
-                <input
-                  type="text"
-                  placeholder="Job title (e.g. Senior Frontend Engineer)"
-                  value={jobTitle}
-                  onChange={(event) => setJobTitle(event.target.value)}
-                  disabled={!tailored}
-                  className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 disabled:cursor-not-allowed disabled:border-slate-800 disabled:bg-slate-900/60"
-                />
-                <textarea
-                  placeholder="Paste the job description"
-                  value={jobDescription}
-                  onChange={(event) => setJobDescription(event.target.value)}
-                  disabled={!tailored}
-                  rows={4}
-                  className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 disabled:cursor-not-allowed disabled:border-slate-800 disabled:bg-slate-900/60"
-                />
-              </div>
-            </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-slate-200" htmlFor="template">
+                    Choose a template
+                  </label>
+                  <select
+                    id="template"
+                    name="template"
+                    value={templateId}
+                    onChange={(event) => setTemplateId(event.target.value)}
+                    className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
+                  >
+                    {TEMPLATE_OPTIONS.map((option) => (
+                      <option key={option.id} value={option.id}>
+                        {option.name}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-slate-400">{template?.description}</p>
+                </div>
+
+                <div className="space-y-3 rounded-xl border border-slate-800 bg-slate-900/80 p-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-sm font-semibold text-slate-200">Tailor for a specific job</span>
+                    <input
+                      type="checkbox"
+                      className="h-5 w-5 cursor-pointer accent-sky-500"
+                      checked={tailored}
+                      onChange={(event) => setTailored(event.target.checked)}
+                    />
+                  </div>
+                  <p className="text-xs text-slate-400">
+                    Provide the role and description to optimise bullet points for Applicant Tracking Systems.
+                  </p>
+                  <div className="grid gap-3">
+                    <input
+                      type="text"
+                      placeholder="Job title (e.g. Senior Frontend Engineer)"
+                      value={jobTitle}
+                      onChange={(event) => setJobTitle(event.target.value)}
+                      disabled={!tailored}
+                      className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 disabled:cursor-not-allowed disabled:border-slate-800 disabled:bg-slate-900/60"
+                    />
+                    <textarea
+                      placeholder="Paste the job description"
+                      value={jobDescription}
+                      onChange={(event) => setJobDescription(event.target.value)}
+                      disabled={!tailored}
+                      rows={4}
+                      className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 disabled:cursor-not-allowed disabled:border-slate-800 disabled:bg-slate-900/60"
+                    />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-slate-200" htmlFor="latex-file">
+                    Upload your LaTeX source (.tex)
+                  </label>
+                  <input
+                    id="latex-file"
+                    name="latex-file"
+                    type="file"
+                    accept=".tex,application/x-tex,text/x-tex"
+                    onChange={(event) => {
+                      const selected = event.target.files?.[0] ?? null;
+                      setLatexFile(selected);
+                      if (selected) {
+                        const name = selected.name.trim();
+                        if (name) {
+                          setManualFilename(name.toLowerCase().endsWith(".tex") ? name : `${name}.tex`);
+                        }
+                        setLatexSource("");
+                      }
+                    }}
+                    className="w-full cursor-pointer rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
+                  />
+                  {latexFile ? (
+                    <p className="text-xs text-slate-400">Selected: {latexFile.name}</p>
+                  ) : (
+                    <p className="text-xs text-slate-500">Package an existing .tex file without touching your templates.</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-slate-200" htmlFor="latex-source">
+                    Or paste LaTeX code
+                  </label>
+                  <textarea
+                    id="latex-source"
+                    value={latexSource}
+                    onChange={(event) => {
+                      setLatexSource(event.target.value);
+                      if (latexFile) {
+                        setLatexFile(null);
+                      }
+                    }}
+                    rows={8}
+                    placeholder="\\documentclass{article}\n..."
+                    className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
+                  />
+                  <p className="text-xs text-slate-500">
+                    We package the content into a downloadable archive—nothing is stored after processing.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-slate-200" htmlFor="latex-filename">
+                    File name
+                  </label>
+                  <input
+                    id="latex-filename"
+                    type="text"
+                    value={manualFilename}
+                    onChange={(event) => setManualFilename(event.target.value)}
+                    className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
+                  />
+                  <p className="text-xs text-slate-500">Used as the exported .tex file name inside the zip.</p>
+                </div>
+              </>
+            )}
 
             <button
               type="submit"
               disabled={loading}
               className="w-full rounded-md bg-sky-500 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-sky-400 disabled:cursor-not-allowed disabled:bg-slate-700"
             >
-              {loading ? "Processing..." : "Convert resume"}
+              {loading
+                ? inputMode === "pdf"
+                  ? "Processing..."
+                  : "Packaging..."
+                : inputMode === "pdf"
+                ? "Convert resume"
+                : "Package LaTeX"}
             </button>
             {error && <p className="text-sm text-rose-400">{error}</p>}
           </form>
@@ -266,6 +432,39 @@ export default function HomePage() {
               </div>
             </div>
           )}
+          {manualResult && (
+            <div className="space-y-4 rounded-xl border border-slate-800 bg-slate-900/80 p-4 text-sm text-slate-200">
+              <h3 className="text-base font-semibold text-white">Download your LaTeX archive</h3>
+              <p className="text-xs text-slate-400">
+                File packaged as {manualResult.filename}
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <DownloadButton
+                  label="Download LaTeX"
+                  disabled={!manualResult}
+                  onClick={() =>
+                    manualResult &&
+                    triggerDownload(
+                      new Blob([manualResult.latex], { type: "application/x-tex;charset=utf-8" }),
+                      manualResult.filename
+                    )
+                  }
+                />
+                <DownloadButton
+                  label="Download Zip"
+                  disabled={!manualResult}
+                  onClick={() => {
+                    if (!manualResult) return;
+                    const archiveName = manualResult.filename.replace(/\.tex$/i, "") || "manual-resume";
+                    triggerDownload(
+                      base64ToBlob(manualResult.zipBase64, "application/zip"),
+                      `${archiveName}.zip`
+                    );
+                  }}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -290,6 +489,9 @@ export default function HomePage() {
           </p>
           <p>
             Need to tweak the result? Download the LaTeX source, make changes locally, and recompile with your favourite toolchain.
+          </p>
+          <p>
+            Already working in LaTeX? Upload your existing source to create shareable downloads without leaving the browser.
           </p>
         </div>
       </section>

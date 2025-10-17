@@ -40,3 +40,9 @@ export interface ProcessResult {
   templateId: string;
   tailored: boolean;
 }
+
+export interface ManualLatexResult {
+  latex: string;
+  zipBase64: string;
+  filename: string;
+}
