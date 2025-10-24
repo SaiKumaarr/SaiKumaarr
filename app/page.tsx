@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { TEMPLATE_OPTIONS } from "@/lib/templates";
+import { ACCENT } from "@/lib/theme";
 import type { ManualLatexResult, ProcessResult } from "@/lib/types";
 
 const FEATURES = [
@@ -41,7 +42,7 @@ const DownloadButton = ({
     type="button"
     onClick={onClick}
     disabled={disabled}
-    className="rounded-md bg-sky-500 px-4 py-2 text-sm font-semibold text-white shadow disabled:cursor-not-allowed disabled:bg-slate-600"
+    className={`rounded-md ${ACCENT.primaryBg} px-4 py-2 text-sm font-semibold text-white shadow disabled:cursor-not-allowed disabled:bg-slate-600`}
   >
     {label}
   </button>
@@ -187,7 +188,9 @@ export default function HomePage() {
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-12 px-6 py-12">
       <section className="grid gap-6 rounded-3xl border border-slate-800 bg-slate-900/60 p-8 shadow-xl shadow-slate-950/40 lg:grid-cols-2">
         <div className="space-y-6">
-          <span className="inline-flex items-center rounded-full bg-sky-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-sky-300">
+          <span
+            className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${ACCENT.pillBg} ${ACCENT.primaryText}`}
+          >
             ResumeTex
           </span>
           <h1 className="text-4xl font-display font-semibold leading-tight text-white lg:text-5xl">
@@ -196,11 +199,11 @@ export default function HomePage() {
           <p className="text-lg text-slate-300">
             Convert your existing resume into professional LaTeX templates in seconds. Optimise for specific roles and download both the LaTeX source and polished PDF—no LaTeX knowledge required.
           </p>
-          <div className="flex flex-wrap gap-2 text-xs text-sky-200">
+          <div className={`flex flex-wrap gap-2 text-xs ${ACCENT.softText}`}>
             {LANGUAGE_BADGES.map((language) => (
               <span
                 key={language}
-                className="inline-flex items-center rounded-full border border-sky-500/40 bg-sky-500/10 px-3 py-1 font-semibold uppercase tracking-wide"
+                className={`inline-flex items-center rounded-full px-3 py-1 font-semibold uppercase tracking-wide ${ACCENT.pillBorder} ${ACCENT.pillBg} ${ACCENT.primaryText}`}
               >
                 {language}
               </span>
@@ -209,7 +212,7 @@ export default function HomePage() {
           <ul className="grid gap-3 text-sm text-slate-300">
             {FEATURES.map((feature) => (
               <li key={feature} className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 rounded-full bg-sky-400" />
+                <span className={`mt-1 h-2 w-2 rounded-full ${ACCENT.indicatorBg}`} />
                 <span>{feature}</span>
               </li>
             ))}
@@ -226,7 +229,9 @@ export default function HomePage() {
                     type="button"
                     onClick={() => handleModeChange(mode.id)}
                     className={`flex-1 rounded-md px-3 py-2 transition ${
-                      active ? "bg-sky-500 text-white shadow" : "text-slate-300 hover:bg-slate-800/60 hover:text-white"
+                      active
+                        ? `${ACCENT.primaryBg} text-white shadow`
+                        : "text-slate-300 hover:bg-slate-800/60 hover:text-white"
                     }`}
                   >
                     {mode.label}
@@ -251,7 +256,7 @@ export default function HomePage() {
                       const selected = event.target.files?.[0] ?? null;
                       setFile(selected);
                     }}
-                    className="w-full cursor-pointer rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
+                    className={`w-full cursor-pointer rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 ${ACCENT.focusRing}`}
                   />
                   {file ? (
                     <p className="text-xs text-slate-400">Selected: {file.name}</p>
@@ -269,7 +274,7 @@ export default function HomePage() {
                     name="template"
                     value={templateId}
                     onChange={(event) => setTemplateId(event.target.value)}
-                    className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
+                    className={`w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 ${ACCENT.focusRing}`}
                   >
                     {TEMPLATE_OPTIONS.map((option) => (
                       <option key={option.id} value={option.id}>
@@ -285,7 +290,7 @@ export default function HomePage() {
                     <span className="text-sm font-semibold text-slate-200">Tailor for a specific job</span>
                     <input
                       type="checkbox"
-                      className="h-5 w-5 cursor-pointer accent-sky-500"
+                      className={`h-5 w-5 cursor-pointer ${ACCENT.radio}`}
                       checked={tailored}
                       onChange={(event) => setTailored(event.target.checked)}
                     />
@@ -300,7 +305,7 @@ export default function HomePage() {
                       value={jobTitle}
                       onChange={(event) => setJobTitle(event.target.value)}
                       disabled={!tailored}
-                      className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 disabled:cursor-not-allowed disabled:border-slate-800 disabled:bg-slate-900/60"
+                      className={`w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:border-slate-800 disabled:bg-slate-900/60 ${ACCENT.focusRing}`}
                     />
                     <textarea
                       placeholder="Paste the job description"
@@ -308,7 +313,7 @@ export default function HomePage() {
                       onChange={(event) => setJobDescription(event.target.value)}
                       disabled={!tailored}
                       rows={4}
-                      className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 disabled:cursor-not-allowed disabled:border-slate-800 disabled:bg-slate-900/60"
+                      className={`w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:border-slate-800 disabled:bg-slate-900/60 ${ACCENT.focusRing}`}
                     />
                   </div>
                 </div>
@@ -335,7 +340,7 @@ export default function HomePage() {
                         setLatexSource("");
                       }
                     }}
-                    className="w-full cursor-pointer rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
+                    className={`w-full cursor-pointer rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 ${ACCENT.focusRing}`}
                   />
                   {latexFile ? (
                     <p className="text-xs text-slate-400">Selected: {latexFile.name}</p>
@@ -359,7 +364,7 @@ export default function HomePage() {
                     }}
                     rows={8}
                     placeholder="\\documentclass{article}\n..."
-                    className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
+                    className={`w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 ${ACCENT.focusRing}`}
                   />
                   <p className="text-xs text-slate-500">
                     We package the content into a downloadable archive—nothing is stored after processing.
@@ -375,7 +380,7 @@ export default function HomePage() {
                     type="text"
                     value={manualFilename}
                     onChange={(event) => setManualFilename(event.target.value)}
-                    className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
+                    className={`w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 ${ACCENT.focusRing}`}
                   />
                   <p className="text-xs text-slate-500">Used as the exported .tex file name inside the zip.</p>
                 </div>
@@ -385,7 +390,7 @@ export default function HomePage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-md bg-sky-500 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-sky-400 disabled:cursor-not-allowed disabled:bg-slate-700"
+              className={`w-full rounded-md ${ACCENT.primaryBg} px-4 py-2 text-sm font-semibold text-white shadow-md transition ${ACCENT.primaryHoverBg} disabled:cursor-not-allowed disabled:bg-slate-700`}
             >
               {loading
                 ? inputMode === "pdf"
@@ -474,7 +479,7 @@ export default function HomePage() {
           <ul className="mt-4 space-y-3 text-sm text-slate-300">
             {HOW_IT_WORKS.map((step, index) => (
               <li key={step} className="flex items-start gap-3">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-sky-500/20 text-sky-300">
+                <span className={`flex h-6 w-6 items-center justify-center rounded-full ${ACCENT.highlightBg} ${ACCENT.primaryText}`}>
                   {index + 1}
                 </span>
                 <span>{step}</span>

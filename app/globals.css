@@ -11,7 +11,7 @@ body {
 }
 
 a {
-  @apply text-sky-400 hover:text-sky-300 transition-colors;
+  @apply text-violet-400 hover:text-violet-300 transition-colors;
 }
 
 button {
