@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Product Manager Portfolio · Mockup Preview</title>
+    <meta
+      name="description"
+      content="Static preview of the AI Product Manager portfolio mockups, including hero, skills, journey, experiments, tools, and contact sections."
+    />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --slate-950: #020617;
+        --slate-900: #0f172a;
+        --slate-800: #1e293b;
+        --slate-200: #e2e8f0;
+        --slate-400: #94a3b8;
+        --slate-500: #64748b;
+        --white: #ffffff;
+        --sky-500: #0ea5e9;
+        --sky-300: #38bdf8;
+        --emerald-400: #34d399;
+        --indigo-500: #6366f1;
+        --background: linear-gradient(160deg, #0e1117 0%, #101522 40%, #1a2235 100%);
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--background);
+        color: var(--slate-200);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 48px 24px 80px;
+        gap: 32px;
+      }
+
+      header {
+        text-align: center;
+        max-width: 960px;
+      }
+
+      header h1 {
+        font-family: "Space Grotesk", "Inter", sans-serif;
+        font-weight: 700;
+        font-size: clamp(2.5rem, 5vw, 3.75rem);
+        margin-bottom: 16px;
+      }
+
+      header p {
+        color: var(--slate-400);
+        margin: 0 auto;
+        font-size: 1.05rem;
+        max-width: 680px;
+      }
+
+      .preview-grid {
+        display: grid;
+        gap: 24px;
+        max-width: 1100px;
+        width: 100%;
+      }
+
+      section {
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 24px;
+        padding: 32px;
+        display: grid;
+        gap: 24px;
+        box-shadow: 0 30px 80px rgba(2, 6, 23, 0.35);
+      }
+
+      section header {
+        text-align: left;
+      }
+
+      section h2 {
+        margin: 0 0 8px;
+        font-family: "Space Grotesk", "Inter", sans-serif;
+        font-size: clamp(1.75rem, 3vw, 2.3rem);
+      }
+
+      section p {
+        margin: 0;
+        color: var(--slate-400);
+        line-height: 1.6;
+      }
+
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .chip {
+        border-radius: 999px;
+        background: rgba(14, 165, 233, 0.18);
+        padding: 8px 16px;
+        font-size: 0.8rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--sky-300);
+      }
+
+      .two-col {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+
+      .card {
+        border-radius: 20px;
+        background: rgba(2, 6, 23, 0.65);
+        border: 1px solid rgba(148, 163, 184, 0.15);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .card h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: var(--white);
+      }
+
+      .card p {
+        font-size: 0.95rem;
+        color: var(--slate-400);
+      }
+
+      .highlight {
+        border-radius: 16px;
+        padding: 16px 20px;
+        background: rgba(99, 102, 241, 0.18);
+        border: 1px solid rgba(99, 102, 241, 0.35);
+        font-size: 0.95rem;
+        color: #c7d2fe;
+      }
+
+      .palette-grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+
+      .swatch {
+        border-radius: 18px;
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        overflow: hidden;
+      }
+
+      .swatch strong {
+        display: block;
+        padding: 16px 18px 8px;
+        font-size: 0.95rem;
+        letter-spacing: 0.05em;
+      }
+
+      .swatch .tones {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        border-top: 1px solid rgba(148, 163, 184, 0.12);
+      }
+
+      .swatch .tones span {
+        padding: 16px;
+        font-size: 0.85rem;
+        text-align: center;
+      }
+
+      .swatch .usage {
+        padding: 12px 18px 18px;
+        font-size: 0.85rem;
+        color: var(--slate-400);
+      }
+
+      ol, ul {
+        padding-left: 20px;
+        margin: 0;
+        display: grid;
+        gap: 8px;
+      }
+
+      footer {
+        text-align: center;
+        color: var(--slate-500);
+        font-size: 0.85rem;
+        max-width: 720px;
+      }
+
+      footer a {
+        color: var(--sky-300);
+        text-decoration: none;
+      }
+
+      @media (max-width: 720px) {
+        body {
+          padding: 32px 16px 64px;
+        }
+
+        section {
+          padding: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>AI Product Manager Portfolio Mockups</h1>
+      <p>
+        This standalone HTML preview mirrors the interactive wireframes built in the Next.js application. Use it to quickly share or
+        review the visual direction for the hero, skills, professional journey, AI experiments, tools, and contact flows without
+        running the development server.
+      </p>
+    </header>
+
+    <div class="preview-grid">
+      <section>
+        <header>
+          <div class="chip">Hero · Who I Am</div>
+          <h2>Immersive identity moment</h2>
+          <p>
+            Split layout hero pairing a personal brand statement with animated role ticker and an orbiting portrait treatment that
+            conveys motion and focus.
+          </p>
+        </header>
+        <div class="two-col">
+          <div class="card">
+            <h3>Brand Narrative</h3>
+            <p>
+              “AI Product Manager with 7+ years orchestrating data-driven products from concept to scalable launch. Mission: design
+              AI that amplifies human intelligence responsibly.”
+            </p>
+            <div class="highlight">Primary CTAs: View My Work · Book a Strategy Session</div>
+          </div>
+          <div class="card">
+            <h3>Motion Treatment</h3>
+            <p>
+              Circular portrait with gradient ring using the slow-spin accent, paired with hover overlay revealing quick facts such
+              as responsible AI focus and experiment volume.
+            </p>
+            <p class="highlight">Animated ticker cycles titles: Product Strategist → AI Experimenter → Team Catalyst.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <header>
+          <div class="chip">Skills &amp; Expertise</div>
+          <h2>Interactive competency map</h2>
+          <p>
+            Tabbed skill stacks visualise proficiency across technical, product management, AI/ML, and soft skills with radial
+            meters and project filters.
+          </p>
+        </header>
+        <div class="two-col">
+          <div class="card">
+            <h3>Segmented navigation</h3>
+            <ul>
+              <li>Technical · APIs, SQL, Python, LLM orchestration (5+ years).</li>
+              <li>Product · Vision setting, roadmapping, stakeholder alignment.</li>
+              <li>AI/ML · Prompt engineering, model evaluation, responsible AI.</li>
+              <li>Soft Skills · Cross-functional leadership, storytelling, experimentation culture.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Micro interactions</h3>
+            <p>
+              Cards flip on hover/tap to reveal use cases and link to relevant experiments. Progress arcs animate when scrolled into
+              view.
+            </p>
+            <p class="highlight">Skill tags filter connected experiments surfaced beneath the grid.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <header>
+          <div class="chip">Professional Journey</div>
+          <h2>Seven-year growth timeline</h2>
+          <p>
+            Horizontal timeline (desktop) and stacked milestones (mobile) highlight logos, durations, quantified impact, and
+            testimonials.
+          </p>
+        </header>
+        <div class="two-col">
+          <div class="card">
+            <h3>Milestone breakdown</h3>
+            <ul>
+              <li>Company nodes expand to reveal KPIs, team size, and strategic wins.</li>
+              <li>Transitions callouts explain role changes and promotion context.</li>
+              <li>Logos start monochrome and glow with brand color on interaction.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Measurement-first storytelling</h3>
+            <p>
+              Achievements spotlight metrics such as +35% model adoption, 3 AI features launched, 0→1 experimentation programs, and
+              user impact counts.
+            </p>
+            <p class="highlight">Expandable drawers use focus traps for keyboard accessibility.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <header>
+          <div class="chip">AI Experiments Showcase</div>
+          <h2>Filterable gallery of prototypes</h2>
+          <p>
+            Masonry grid features image generation, advanced prompting, and supporting tools. Cards open to method, datasets, and
+            outcomes with optional demos.
+          </p>
+        </header>
+        <div class="two-col">
+          <div class="card">
+            <h3>Gallery highlights</h3>
+            <ul>
+              <li>Before/after sliders for Midjourney and Stable Diffusion image explorations.</li>
+              <li>Prompt playground replicates LLM chains with guardrail notes.</li>
+              <li>Tags show models, latency, and business impact metrics.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Filtering &amp; context</h3>
+            <p>
+              Filters by category and tooling instantly update the layout. Each experiment surfaces methodology, learnings, and next
+              steps for recruiters to assess depth.
+            </p>
+            <p class="highlight">Modal layout supports light/dark mode with accessible contrast ratios.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <header>
+          <div class="chip">AI Tools &amp; Technologies</div>
+          <h2>Capability-aligned tool matrix</h2>
+          <p>
+            Responsive grid or carousel grouping tools by function: Image Generation, NLP, Data Analysis, and Product Operations.
+          </p>
+        </header>
+        <div class="two-col">
+          <div class="card">
+            <h3>Tool highlights</h3>
+            <ul>
+              <li>OpenAI APIs, LangChain, Pinecone, Midjourney, Stable Diffusion.</li>
+              <li>Analytics and product ops with Mixpanel, Amplitude, Notion, Jira.</li>
+              <li>Design stack via Figma and FigJam with AI-assisted ideation.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Interaction details</h3>
+            <p>
+              Hover reveals proficiency level and signature use case snippet. Clicking filters relevant experiments or timeline
+              moments that prove application depth.
+            </p>
+            <p class="highlight">Supports swipe gestures on mobile for carousel presentation.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <header>
+          <div class="chip">Contact &amp; Collaboration</div>
+          <h2>High-conversion outreach hub</h2>
+          <p>
+            Two-column layout featuring narrative CTA, primary contact form, and instant links to email, LinkedIn, and Calendly.
+          </p>
+        </header>
+        <div class="two-col">
+          <div class="card">
+            <h3>Form structure</h3>
+            <ul>
+              <li>Name, email, project type dropdown, message field, optional budget slider.</li>
+              <li>Inline validation with accessible messaging and ARIA attributes.</li>
+              <li>Success confirmation with subtle confetti micro-interaction.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Supporting channels</h3>
+            <p>
+              Dedicated buttons to email, LinkedIn (<a href="https://www.linkedin.com/in/saikumarbasole/" target="_blank" rel="noreferrer">saikumarbasole</a>),
+              and calendar booking. Mobile responsive with sticky bottom CTA bar.
+            </p>
+            <p class="highlight">Footer captures newsletter opt-in and privacy-friendly analytics notice.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <header>
+          <div class="chip">Visual Language</div>
+          <h2>Color palette &amp; typography</h2>
+          <p>
+            Reference the primary UI tokens to maintain consistency across mockups, prototypes, and future production build-outs.
+          </p>
+        </header>
+        <div class="palette-grid">
+          <div class="swatch">
+            <strong>Primary</strong>
+            <div class="tones">
+              <span style="background:#4057FF">#4057FF<br />Light</span>
+              <span style="background:#8597FF">#8597FF<br />Dark</span>
+            </div>
+            <div class="usage">Calls-to-action, animated highlights, navigation focus state.</div>
+          </div>
+          <div class="swatch">
+            <strong>Secondary</strong>
+            <div class="tones">
+              <span style="background:#00C39A">#00C39A<br />Light</span>
+              <span style="background:#38E1B8">#38E1B8<br />Dark</span>
+            </div>
+            <div class="usage">Data visualisations, success messaging, progress arcs.</div>
+          </div>
+          <div class="swatch">
+            <strong>Background</strong>
+            <div class="tones">
+              <span style="background:#F5F7FB; color:#0f172a">#F5F7FB<br />Light</span>
+              <span style="background:#0E1117">#0E1117<br />Dark</span>
+            </div>
+            <div class="usage">Base canvas gradient with subtle particle animation.</div>
+          </div>
+          <div class="swatch">
+            <strong>Surface</strong>
+            <div class="tones">
+              <span style="background:#FFFFFF; color:#0f172a">#FFFFFF<br />Light</span>
+              <span style="background:#141B2C">#141B2C<br />Dark</span>
+            </div>
+            <div class="usage">Cards, modals, drawer surfaces with elevated shadows.</div>
+          </div>
+          <div class="swatch">
+            <strong>Typography</strong>
+            <div class="tones">
+              <span style="background:#111827; color:#e2e8f0">#111827<br />Light</span>
+              <span style="background:#E6EDF3; color:#0f172a">#E6EDF3<br />Dark</span>
+            </div>
+            <div class="usage">Headings in Space Grotesk, body copy in Inter.</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <p>
+        Looking for the interactive version? Run <code>npm install</code> followed by <code>npm run dev</code> inside the project and
+        open <a href="http://localhost:3000/mockups" target="_blank" rel="noreferrer">http://localhost:3000/mockups</a>.
+      </p>
+    </footer>
+  </body>
+</html>

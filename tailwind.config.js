@@ -10,6 +10,9 @@ module.exports = {
       fontFamily: {
         display: ['"DM Sans"', 'sans-serif'],
         body: ['"Inter"', 'sans-serif']
+      },
+      animation: {
+        'spin-slow': 'spin 6s linear infinite'
       }
     },
   },
